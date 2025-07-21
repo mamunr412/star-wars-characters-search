@@ -7,37 +7,36 @@ This document provides comprehensive instructions for deploying the Star Wars Ch
 ## Quick Deployment (Netlify)
 
 ### Automatic Deployment
+
 The application is already deployed and accessible at:
 **🚀 Live URL**: [https://melodic-tartufo-d120ac.netlify.app](https://melodic-tartufo-d120ac.netlify.app)
-
-### Claim Existing Deployment
-To transfer the existing deployment to your Netlify account:
-1. Visit: [Netlify Claim URL](https://app.netlify.com/claim?utm_source=bolt#eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiI1aDZmZEstVktNTXZuRjNiRlZUaktfU2JKVGgzNlNfMjJheTlpTHhVX0Q4Iiwic2Vzc2lvbl9pZCI6IjUyOTE1NzgxOjU2ODEwNTEiLCJpYXQiOjE3NTMwNzMwNzV9.qX_RB2GoKxR-EawJxnQ46NofIgAXD8TcD8kUh8PkXJ0)
-2. Sign in to your Netlify account
-3. The site will be transferred to your account
 
 ## Manual Deployment Options
 
 ### 1. Netlify (Recommended)
 
 #### Prerequisites
+
 - Netlify account
 - Git repository with your code
 
 #### Steps
+
 1. **Build the Application**
+
    ```bash
    npm run build
    ```
 
 2. **Deploy via Netlify CLI**
+
    ```bash
    # Install Netlify CLI
    npm install -g netlify-cli
-   
+
    # Login to Netlify
    netlify login
-   
+
    # Deploy to production
    netlify deploy --prod --dir=dist
    ```
@@ -51,7 +50,9 @@ To transfer the existing deployment to your Netlify account:
    - Click "Deploy site"
 
 #### Netlify Configuration
+
 Create `netlify.toml` in project root:
+
 ```toml
 [build]
   publish = "dist"
@@ -84,26 +85,32 @@ Create `netlify.toml` in project root:
 ### 2. Vercel
 
 #### Prerequisites
+
 - Vercel account
 - Git repository
 
 #### Steps
+
 1. **Install Vercel CLI**
+
    ```bash
    npm install -g vercel
    ```
 
 2. **Deploy**
+
    ```bash
    # Login to Vercel
    vercel login
-   
+
    # Deploy
    vercel --prod
    ```
 
 #### Vercel Configuration
+
 Create `vercel.json` in project root:
+
 ```json
 {
   "buildCommand": "npm run build",
@@ -123,44 +130,47 @@ Create `vercel.json` in project root:
 ### 3. GitHub Pages
 
 #### Prerequisites
+
 - GitHub repository
 - GitHub Actions enabled
 
 #### Steps
+
 1. **Create GitHub Actions Workflow**
    Create `.github/workflows/deploy.yml`:
+
    ```yaml
    name: Deploy to GitHub Pages
-   
+
    on:
      push:
-       branches: [ main ]
-   
+       branches: [main]
+
    jobs:
      build-and-deploy:
        runs-on: ubuntu-latest
-       
+
        steps:
-       - name: Checkout
-         uses: actions/checkout@v3
-       
-       - name: Setup Node.js
-         uses: actions/setup-node@v3
-         with:
-           node-version: '18'
-           cache: 'npm'
-       
-       - name: Install dependencies
-         run: npm ci
-       
-       - name: Build
-         run: npm run build
-       
-       - name: Deploy to GitHub Pages
-         uses: peaceiris/actions-gh-pages@v3
-         with:
-           github_token: ${{ secrets.GITHUB_TOKEN }}
-           publish_dir: ./dist
+         - name: Checkout
+           uses: actions/checkout@v3
+
+         - name: Setup Node.js
+           uses: actions/setup-node@v3
+           with:
+             node-version: "18"
+             cache: "npm"
+
+         - name: Install dependencies
+           run: npm ci
+
+         - name: Build
+           run: npm run build
+
+         - name: Deploy to GitHub Pages
+           uses: peaceiris/actions-gh-pages@v3
+           with:
+             github_token: ${{ secrets.GITHUB_TOKEN }}
+             publish_dir: ./dist
    ```
 
 2. **Configure Repository**
@@ -170,16 +180,18 @@ Create `vercel.json` in project root:
    - Choose "gh-pages" branch
 
 #### Vite Configuration for GitHub Pages
+
 Update `vite.config.ts`:
+
 ```typescript
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  base: '/your-repository-name/', // Replace with your repo name
+  base: "/your-repository-name/", // Replace with your repo name
   optimizeDeps: {
-    exclude: ['lucide-react'],
+    exclude: ["lucide-react"],
   },
 });
 ```
@@ -187,16 +199,20 @@ export default defineConfig({
 ### 4. Firebase Hosting
 
 #### Prerequisites
+
 - Firebase account
 - Firebase CLI
 
 #### Steps
+
 1. **Install Firebase CLI**
+
    ```bash
    npm install -g firebase-tools
    ```
 
 2. **Initialize Firebase**
+
    ```bash
    firebase login
    firebase init hosting
@@ -204,6 +220,7 @@ export default defineConfig({
 
 3. **Configure Firebase**
    Select or create a project, then configure:
+
    - Public directory: `dist`
    - Single-page app: `Yes`
    - Automatic builds: `No`
@@ -215,16 +232,14 @@ export default defineConfig({
    ```
 
 #### Firebase Configuration
+
 `firebase.json`:
+
 ```json
 {
   "hosting": {
     "public": "dist",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
         "source": "**",
@@ -249,26 +264,32 @@ export default defineConfig({
 ### 5. AWS S3 + CloudFront
 
 #### Prerequisites
+
 - AWS account
 - AWS CLI configured
 
 #### Steps
+
 1. **Build Application**
+
    ```bash
    npm run build
    ```
 
 2. **Create S3 Bucket**
+
    ```bash
    aws s3 mb s3://your-bucket-name
    ```
 
 3. **Upload Files**
+
    ```bash
    aws s3 sync dist/ s3://your-bucket-name --delete
    ```
 
 4. **Configure S3 for Static Hosting**
+
    ```bash
    aws s3 website s3://your-bucket-name \
      --index-document index.html \
@@ -283,7 +304,9 @@ export default defineConfig({
 ## Environment Variables
 
 ### Development Environment
+
 Create `.env.local`:
+
 ```bash
 # Development settings
 VITE_API_BASE_URL=https://www.swapi.tech/api
@@ -291,7 +314,9 @@ VITE_APP_TITLE=Star Wars Character Browser
 ```
 
 ### Production Environment
+
 Set environment variables in your hosting platform:
+
 ```bash
 VITE_API_BASE_URL=https://www.swapi.tech/api
 VITE_APP_TITLE=Star Wars Character Browser
@@ -303,35 +328,37 @@ NODE_VERSION=18
 ### Production Build Settings
 
 #### Vite Configuration
+
 ```typescript
 // vite.config.ts
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
   build: {
-    target: 'es2015',
-    outDir: 'dist',
-    assetsDir: 'assets',
+    target: "es2015",
+    outDir: "dist",
+    assetsDir: "assets",
     sourcemap: false, // Set to true for debugging
-    minify: 'terser',
+    minify: "terser",
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom'],
-          icons: ['lucide-react']
-        }
-      }
-    }
+          vendor: ["react", "react-dom"],
+          icons: ["lucide-react"],
+        },
+      },
+    },
   },
   optimizeDeps: {
-    exclude: ['lucide-react'],
+    exclude: ["lucide-react"],
   },
 });
 ```
 
 #### Package.json Scripts
+
 ```json
 {
   "scripts": {
@@ -348,6 +375,7 @@ export default defineConfig({
 ### Caching Strategy
 
 #### HTTP Headers
+
 ```
 Cache-Control: public, max-age=31536000, immutable  # Static assets
 Cache-Control: public, max-age=3600                 # HTML files
@@ -355,19 +383,15 @@ Cache-Control: no-cache                             # API responses
 ```
 
 #### Service Worker (Future Enhancement)
+
 ```javascript
 // sw.js
-const CACHE_NAME = 'star-wars-app-v1';
-const urlsToCache = [
-  '/',
-  '/static/js/bundle.js',
-  '/static/css/main.css'
-];
+const CACHE_NAME = "star-wars-app-v1";
+const urlsToCache = ["/", "/static/js/bundle.js", "/static/css/main.css"];
 
-self.addEventListener('install', (event) => {
+self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(urlsToCache))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
   );
 });
 ```
@@ -375,6 +399,7 @@ self.addEventListener('install', (event) => {
 ### Bundle Analysis
 
 #### Analyze Bundle Size
+
 ```bash
 # Install analyzer
 npm install --save-dev vite-bundle-analyzer
@@ -385,6 +410,7 @@ npx vite-bundle-analyzer dist/assets/*.js
 ```
 
 #### Optimization Techniques
+
 - Tree shaking for unused code
 - Code splitting for route-based chunks
 - Dynamic imports for large components
@@ -395,6 +421,7 @@ npx vite-bundle-analyzer dist/assets/*.js
 ### Performance Monitoring
 
 #### Lighthouse CI
+
 ```yaml
 # .github/workflows/lighthouse.yml
 name: Lighthouse CI
@@ -412,9 +439,10 @@ jobs:
 ```
 
 #### Web Vitals Tracking
+
 ```typescript
 // src/utils/analytics.ts
-import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
+import { getCLS, getFID, getFCP, getLCP, getTTFB } from "web-vitals";
 
 function sendToAnalytics(metric) {
   // Send to your analytics service
@@ -431,6 +459,7 @@ getTTFB(sendToAnalytics);
 ### Error Tracking
 
 #### Sentry Integration (Optional)
+
 ```bash
 npm install @sentry/react @sentry/tracing
 ```
@@ -441,9 +470,7 @@ import * as Sentry from "@sentry/react";
 
 Sentry.init({
   dsn: "YOUR_SENTRY_DSN",
-  integrations: [
-    new Sentry.BrowserTracing(),
-  ],
+  integrations: [new Sentry.BrowserTracing()],
   tracesSampleRate: 1.0,
 });
 ```
@@ -451,16 +478,20 @@ Sentry.init({
 ## Security Considerations
 
 ### Content Security Policy
+
 ```html
 <!-- In index.html -->
-<meta http-equiv="Content-Security-Policy" 
-      content="default-src 'self'; 
+<meta
+  http-equiv="Content-Security-Policy"
+  content="default-src 'self'; 
                script-src 'self' 'unsafe-inline'; 
                style-src 'self' 'unsafe-inline'; 
-               connect-src 'self' https://www.swapi.tech;">
+               connect-src 'self' https://www.swapi.tech;"
+/>
 ```
 
 ### HTTPS Configuration
+
 - Always use HTTPS in production
 - Configure HSTS headers
 - Use secure cookie settings
@@ -470,6 +501,7 @@ Sentry.init({
 ### Common Deployment Issues
 
 #### Build Failures
+
 ```bash
 # Clear cache and reinstall
 rm -rf node_modules package-lock.json
@@ -483,11 +515,13 @@ npm run build -- --verbose
 ```
 
 #### Routing Issues (404 on Refresh)
+
 - Ensure SPA fallback is configured
 - Check server redirects to index.html
 - Verify base URL configuration
 
 #### Environment Variable Issues
+
 ```bash
 # Check environment variables
 echo $NODE_ENV
@@ -500,12 +534,14 @@ npm run build && grep -r "VITE_" dist/
 ### Performance Issues
 
 #### Slow Loading
+
 - Check bundle size with analyzer
 - Implement code splitting
 - Optimize images and assets
 - Enable compression (gzip/brotli)
 
 #### Memory Leaks
+
 - Check for uncleaned event listeners
 - Verify useEffect cleanup functions
 - Monitor component re-renders
@@ -513,6 +549,7 @@ npm run build && grep -r "VITE_" dist/
 ## Rollback Strategy
 
 ### Quick Rollback
+
 ```bash
 # Netlify
 netlify deploy --prod --dir=previous-build
@@ -525,6 +562,7 @@ cp -r dist/ backup-$(date +%Y%m%d)
 ```
 
 ### Version Management
+
 - Tag releases in Git
 - Keep previous build artifacts
 - Document deployment changes
