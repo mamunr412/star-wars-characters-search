@@ -28,10 +28,13 @@ export const useCharacters = (searchQuery: string) => {
         
         const data: CharacterListResponse = await response.json();
         
+        // Ensure results is always an array to prevent undefined errors
+        const results = Array.isArray(data.results) ? data.results : [];
+        
         if (page === 1) {
-          setCharacters(data.results);
+          setCharacters(results);
         } else {
-          setCharacters(prev => [...prev, ...data.results]);
+          setCharacters(prev => [...prev, ...results]);
         }
         
         setHasMore(data.next !== null);
