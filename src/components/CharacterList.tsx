@@ -61,7 +61,7 @@ export const CharacterList: React.FC<CharacterListProps> = ({
       </div>
 
       {/* Load More Button */}
-      {hasMore && !searchQuery && (
+      {hasMore && (
         <div className="flex justify-center pt-8">
           <button
             onClick={loadMore}

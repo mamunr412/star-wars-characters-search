@@ -167,6 +167,7 @@ src/
 1. **Character List**
    ```
    GET https://www.swapi.tech/api/people?page={page}&limit=10
+   GET https://www.swapi.tech/api/people?name={searchQuery}&page={page}&limit=10
    ```
 
 2. **Character Details**
@@ -178,7 +179,7 @@ src/
 
 1. **Initial Load**: Fetch first page of characters
 2. **Pagination**: Load more characters on demand
-3. **Search**: Filter characters client-side for performance
+3. **Search**: Search characters using API name parameter for accuracy
 4. **Details**: Fetch individual character data when selected
 
 ### Error Handling Strategy
@@ -342,12 +343,12 @@ src/
 - Familiar user interface pattern
 
 #### 3. Search Implementation
-**Decision**: Client-side filtering with debouncing
+**Decision**: Server-side search with API name parameter and debouncing
 **Rationale**:
-- Instant search results
-- Reduced API calls
-- Better user experience
-- Lower server load
+- More accurate search results from the API
+- Handles partial matches and fuzzy search
+- Reduces client-side processing
+- Better performance for large datasets
 
 ### Performance Decisions
 

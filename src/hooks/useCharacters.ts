@@ -16,6 +16,11 @@ export const useCharacters = (searchQuery: string) => {
         
         let url = `https://www.swapi.tech/api/people?page=${page}&limit=10`;
         
+        // Add name parameter if search query exists
+        if (searchQuery.trim()) {
+          url = `https://www.swapi.tech/api/people?name=${encodeURIComponent(searchQuery.trim())}&page=${page}&limit=10`;
+        }
+        
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error('Failed to fetch characters');
@@ -23,18 +28,10 @@ export const useCharacters = (searchQuery: string) => {
         
         const data: CharacterListResponse = await response.json();
         
-        // Filter characters based on search query if provided
-        let filteredCharacters = data.results;
-        if (searchQuery.trim()) {
-          filteredCharacters = data.results.filter(character =>
-            character.name.toLowerCase().includes(searchQuery.toLowerCase())
-          );
-        }
-        
         if (page === 1) {
-          setCharacters(filteredCharacters);
+          setCharacters(data.results);
         } else {
-          setCharacters(prev => [...prev, ...filteredCharacters]);
+          setCharacters(prev => [...prev, ...data.results]);
         }
         
         setHasMore(data.next !== null);
