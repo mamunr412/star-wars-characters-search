@@ -1,16 +1,21 @@
-import React from 'react';
-import { Character } from '../types/Character';
-import { useCharacterDetails } from '../hooks/useCharacterDetails';
-import { LoadingSpinner } from './LoadingSpinner';
-import { ErrorMessage } from './ErrorMessage';
-import { User, Ruler, Weight, Eye, Calendar, MapPin, Palette } from 'lucide-react';
+import {
+  ArrowLeft,
+  Calendar,
+  Eye,
+  MapPin,
+  Palette,
+  Ruler,
+  User,
+  Weight,
+} from "lucide-react";
+import { useParams } from "react-router";
 
-interface CharacterDetailsProps {
-  character: Character;
-}
-
-export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ character }) => {
-  const { details, loading, error } = useCharacterDetails(character.url);
+import { useCharacterDetails } from "../hooks/useCharacterDetails";
+import { ErrorMessage } from "./ErrorMessage";
+import { LoadingSpinner } from "./LoadingSpinner";
+export const CharacterDetails = () => {
+  const { id } = useParams();
+  const { details, loading, error } = useCharacterDetails(String(id));
 
   if (loading) {
     return <LoadingSpinner />;
@@ -23,39 +28,78 @@ export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ character })
   if (!details) {
     return (
       <div className="text-center py-12">
-        <div className="text-gray-400 text-lg">No character details available.</div>
+        <div className="text-gray-400 text-lg">
+          No character details available.
+        </div>
       </div>
     );
   }
 
   const formatValue = (value: string) => {
-    if (value === 'n/a' || value === 'unknown') {
-      return 'Unknown';
+    if (value === "n/a" || value === "unknown") {
+      return "Unknown";
     }
     return value;
   };
 
   const detailItems = [
-    { icon: Ruler, label: 'Height', value: formatValue(details.height) + (details.height !== 'unknown' && details.height !== 'n/a' ? ' cm' : '') },
-    { icon: Weight, label: 'Mass', value: formatValue(details.mass) + (details.mass !== 'unknown' && details.mass !== 'n/a' ? ' kg' : '') },
-    { icon: Calendar, label: 'Birth Year', value: formatValue(details.birth_year) },
-    { icon: User, label: 'Gender', value: formatValue(details.gender) },
-    { icon: Eye, label: 'Eye Color', value: formatValue(details.eye_color) },
-    { icon: Palette, label: 'Hair Color', value: formatValue(details.hair_color) },
-    { icon: Palette, label: 'Skin Color', value: formatValue(details.skin_color) },
+    {
+      icon: Ruler,
+      label: "Height",
+      value:
+        formatValue(details.height) +
+        (details.height !== "unknown" && details.height !== "n/a" ? " cm" : ""),
+    },
+    {
+      icon: Weight,
+      label: "Mass",
+      value:
+        formatValue(details.mass) +
+        (details.mass !== "unknown" && details.mass !== "n/a" ? " kg" : ""),
+    },
+    {
+      icon: Calendar,
+      label: "Birth Year",
+      value: formatValue(details.birth_year),
+    },
+    { icon: User, label: "Gender", value: formatValue(details.gender) },
+    { icon: Eye, label: "Eye Color", value: formatValue(details.eye_color) },
+    {
+      icon: Palette,
+      label: "Hair Color",
+      value: formatValue(details.hair_color),
+    },
+    {
+      icon: Palette,
+      label: "Skin Color",
+      value: formatValue(details.skin_color),
+    },
   ];
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto ">
+      <button
+        onClick={() => window.history.back()}
+        className="flex items-center space-x-2 px-4 py-1 bg-yellow-400/10 hover:bg-yellow-400/20 
+                         text-yellow-400 rounded-lg transition-all duration-200 border border-yellow-400/20 
+                         hover:border-yellow-400/40 mt-2"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        <span>Back </span>
+      </button>
       {/* Character Header */}
-      <div className="bg-gradient-to-r from-yellow-400/10 to-purple-600/10 backdrop-blur-sm 
-                    border border-yellow-400/20 rounded-2xl p-8 mb-8">
+      <div
+        className="bg-gradient-to-r from-yellow-400/10 to-purple-600/10 backdrop-blur-sm 
+                    border border-yellow-400/20 rounded-2xl p-8 mb-8 mt-7"
+      >
         <div className="flex items-center space-x-6">
           <div className="p-4 bg-yellow-400/20 rounded-full">
             <User className="h-12 w-12 text-yellow-400" />
           </div>
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">{details.name}</h1>
+            <h1 className="text-4xl font-bold text-white mb-2">
+              {details.name}
+            </h1>
             <p className="text-gray-300 text-lg">Star Wars Character Profile</p>
           </div>
         </div>
@@ -90,7 +134,7 @@ export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ character })
           <MapPin className="h-6 w-6 text-yellow-400" />
           <span>Additional Information</span>
         </h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wide mb-2">
@@ -98,31 +142,35 @@ export const CharacterDetails: React.FC<CharacterDetailsProps> = ({ character })
             </h3>
             <p className="text-lg text-white">{details.uid}</p>
           </div>
-          
+
           <div>
             <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wide mb-2">
               Homeworld
             </h3>
             <p className="text-lg text-white">
-              {details.homeworld ? 'Available via API' : 'Unknown'}
+              {details.homeworld ? "Available via API" : "Unknown"}
             </p>
           </div>
-          
+
           <div>
             <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wide mb-2">
               Films
             </h3>
             <p className="text-lg text-white">
-              {details.films?.length > 0 ? `${details.films.length} film(s)` : 'None listed'}
+              {details.films?.length > 0
+                ? `${details.films.length} film(s)`
+                : "None listed"}
             </p>
           </div>
-          
+
           <div>
             <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wide mb-2">
               Vehicles & Starships
             </h3>
             <p className="text-lg text-white">
-              {(details.vehicles?.length || 0) + (details.starships?.length || 0)} total
+              {(details.vehicles?.length || 0) +
+                (details.starships?.length || 0)}{" "}
+              total
             </p>
           </div>
         </div>

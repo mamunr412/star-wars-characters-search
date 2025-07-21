@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Character, CharacterListResponse } from '../types/Character';
+import { useState, useEffect } from "react";
+import { Character } from "../types/Character";
 
 export const useCharacters = (searchQuery: string) => {
   const [characters, setCharacters] = useState<Character[]>([]);
@@ -13,34 +13,43 @@ export const useCharacters = (searchQuery: string) => {
       try {
         setLoading(true);
         setError(null);
-        
+
         let url = `https://www.swapi.tech/api/people?page=${page}&limit=10`;
-        
         // Add name parameter if search query exists
         if (searchQuery.trim()) {
-          url = `https://www.swapi.tech/api/people?name=${encodeURIComponent(searchQuery.trim())}&page=${page}&limit=10`;
+          url = `https://www.swapi.tech/api/people?name=${encodeURIComponent(
+            searchQuery.trim()
+          )}`;
         }
-        
+
         const response = await fetch(url);
         if (!response.ok) {
-          throw new Error('Failed to fetch characters');
+          throw new Error("Failed to fetch characters");
         }
-        
-        const data: CharacterListResponse = await response.json();
-        
+
+        const data: any = await response.json();
+
         // Ensure results is always an array to prevent undefined errors
-        const results = Array.isArray(data.results) ? data.results : [];
-        
+        const results = Array.isArray(data?.results)
+          ? data.results
+          : data?.result
+          ? data.result
+          : [];
+
         if (page === 1) {
           setCharacters(results);
         } else {
-          setCharacters(prev => [...prev, ...results]);
+          setCharacters((prev) => [...prev, ...results]);
         }
-        
-        setHasMore(data.next !== null);
+
+        if (data.next) {
+          setHasMore(true);
+        } else {
+          setHasMore(false);
+        }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-        console.error('Error fetching characters:', err);
+        setError(err instanceof Error ? err.message : "An error occurred");
+        console.error("Error fetching characters:", err);
       } finally {
         setLoading(false);
       }
@@ -57,7 +66,7 @@ export const useCharacters = (searchQuery: string) => {
 
   const loadMore = () => {
     if (!loading && hasMore) {
-      setPage(prev => prev + 1);
+      setPage((prev) => prev + 1);
     }
   };
 
@@ -66,6 +75,6 @@ export const useCharacters = (searchQuery: string) => {
     loading,
     error,
     hasMore,
-    loadMore
+    loadMore,
   };
 };

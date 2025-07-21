@@ -4,7 +4,7 @@ export interface Character {
   url: string;
 }
 
-export interface CharacterDetails {
+export interface ICharacterDetails {
   uid: string;
   name: string;
   height: string;
@@ -22,6 +22,7 @@ export interface CharacterDetails {
   created: string;
   edited: string;
   url: string;
+  Character?: Character;
 }
 
 export interface ApiResponse<T> {

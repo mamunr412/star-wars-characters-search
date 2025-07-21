@@ -1,22 +1,27 @@
-import React from 'react';
-import { CharacterCard } from './CharacterCard';
-import { LoadingSpinner } from './LoadingSpinner';
-import { ErrorMessage } from './ErrorMessage';
-import { useCharacters } from '../hooks/useCharacters';
-import { Character } from '../types/Character';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown } from "lucide-react";
+import React from "react";
+import { CharacterCard } from "./CharacterCard";
+import { ErrorMessage } from "./ErrorMessage";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 interface CharacterListProps {
+  characters: any[];
+
   searchQuery: string;
-  onCharacterSelect: (character: Character) => void;
+  hasMore: boolean;
+  error: string | null;
+  loading: boolean;
+  loadMore: () => void;
 }
 
 export const CharacterList: React.FC<CharacterListProps> = ({
+  characters,
+  loading,
+  error,
+  hasMore,
   searchQuery,
-  onCharacterSelect
+  loadMore,
 }) => {
-  const { characters, loading, error, hasMore, loadMore } = useCharacters(searchQuery);
-
   if (error) {
     return <ErrorMessage message={error} />;
   }
@@ -29,7 +34,9 @@ export const CharacterList: React.FC<CharacterListProps> = ({
     return (
       <div className="text-center py-12">
         <div className="text-gray-400 text-lg">
-          {searchQuery ? 'No characters found matching your search.' : 'No characters available.'}
+          {searchQuery
+            ? "No characters found matching your search."
+            : "No characters available."}
         </div>
       </div>
     );
@@ -41,23 +48,31 @@ export const CharacterList: React.FC<CharacterListProps> = ({
       {searchQuery && (
         <div className="text-center">
           <p className="text-gray-300">
-            {characters.length > 0 
-              ? `Found ${characters.length} character${characters.length === 1 ? '' : 's'} matching "${searchQuery}"`
-              : `No characters found for "${searchQuery}"`
-            }
+            {characters.length > 0
+              ? `Found ${characters.length} character${
+                  characters.length === 1 ? "" : "s"
+                } matching "${searchQuery}"`
+              : `No characters found for "${searchQuery}"`}
           </p>
         </div>
       )}
-
+      {/* const character = {
+                uid: item.uid,
+                name: item.properties.name,
+                url: item.properties.url,
+              }; */}
       {/* Character Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {characters.map((character) => (
-          <CharacterCard
-            key={character.uid}
-            character={character}
-            onClick={() => onCharacterSelect(character)}
-          />
-        ))}
+        {characters.map((character) => {
+          const data = character?.properties
+            ? {
+                uid: character.uid,
+                name: character.properties.name,
+                url: character.properties.url,
+              }
+            : character;
+          return <CharacterCard key={character.uid} character={data} />;
+        })}
       </div>
 
       {/* Load More Button */}
@@ -75,7 +90,7 @@ export const CharacterList: React.FC<CharacterListProps> = ({
             ) : (
               <ChevronDown className="h-4 w-4" />
             )}
-            <span>{loading ? 'Loading...' : 'Load More Characters'}</span>
+            <span>{loading ? "Loading..." : "Load More Characters"}</span>
           </button>
         </div>
       )}
